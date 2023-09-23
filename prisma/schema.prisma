@@ -14,13 +14,52 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Customer {
+    cid             Int             @id @default(autoincrement())
+    name            String
+    username        String
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+    address         String
+    tlf             Int             @unique
+    email           String          @unique
+    customerOrders  CustomerOrder[]
 
     @@index([name])
+    @@index([address])
+}
+
+model Order {
+    oid             Int             @id @default(autoincrement())
+    madeAt          DateTime        @default(now())
+    pid             Int
+    product         Product         @relation(fields: [pid], references: [pid], onDelete: Cascade, onUpdate: Cascade)
+    units           Int
+    amount          Int
+    customerOrders  CustomerOrder[]
+    
+    @@index([oid])  // Change pid to oid for primary key
+}
+
+model CustomerOrder {
+    cid         Int
+    oid         Int
+    customer    Customer    @relation(fields: [cid], references: [cid], onDelete: Cascade, onUpdate: Cascade)
+    order       Order       @relation(fields: [oid], references: [oid], onDelete: Cascade, onUpdate: Cascade)
+    
+    @@id([cid, oid])
+}
+
+model Product {
+    pid             Int             @id @default(autoincrement())
+    name            String
+    manufacturer    String
+    description     String
+    url             String
+    madeAt          DateTime        @default(now())
+    pricePerUnit    Int
+    neededUnits     Int             
+    orders          Order[]    
 }
 
 // Necessary for Next auth
