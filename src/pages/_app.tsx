@@ -4,7 +4,8 @@ import { type AppType } from "next/app";
 
 import { api } from "saveshare-import/utils/api";
 
-import "saveshare-import/styles/globals.css";
+import 'src/styles/globals.css'
+import 'src/styles/home.css'
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
